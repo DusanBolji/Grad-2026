@@ -16,7 +16,7 @@ void ocistiStdin(void) {
 }
 
 int main(void) {
-    int izbor;
+    int izbor, opcija;
 
     printf("=====================================\n");
     printf("           CITY BUILDER\n");
@@ -57,7 +57,37 @@ int main(void) {
     printf("I | P1 | S1 |    |    | B1 |    |    |    | F1 |    |\n");
     printf("  +----+----+----+----+----+----+----+----+----+----+\n");
     printf("J |    | F1 |    | P1 |    |    | S2 |    |    | K1 |\n");
-    printf("  +----+----+----+----+----+----+----+----+----+----+\n");
+    printf("  +----+----+----+----+----+----+----+----+----+----+\n\n");
+
+    printf("Odaberite opciju:\n");
+    printf("1 Postavi zgradu\n");
+    printf("2 Ukloni zgradu\n");
+    printf("3 Prikazi statistike\n");
+    printf("0 Sledeci potez\n");
+    scanf("%d", &opcija);
+
+    switch(opcija)
+    {
+       case 1:
+           break;
+
+       case 2:
+        break;
+
+
+       case 3:
+        break;
+
+       case 0:
+           printf("Prelaz na sledeci potez\n");
+        break;
+
+       default:
+        printf("Odabrana opcija ne postoji\n");
+
+
+    }
+
 
                 break;
             case 2:
