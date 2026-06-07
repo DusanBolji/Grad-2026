@@ -61,6 +61,49 @@ void iscrtajMapu(void) {
     crtajHorizontalnuLiniju();
 }
 
+// ================= UPUTSTVO  =================
+void prikazi_uputstvo(void)
+{
+    printf("=====================================\n");
+    printf("            UPUTSTVO\n");
+    printf("=====================================\n");
+
+    printf("Cilj igre je razvoj grada.\n");
+    printf("Gradite zgrade i upravljajte budzetom dok pratite srecu i populaciju!\n");
+
+    printf("=====================================\n");
+
+    printf("SIMBOLI ZGRADA:\n");
+    printf("S - Stambena zgrada(100 EUR), +50 populacije, +10 srece na tom polju\n");
+    printf("P - Park(50 EUR), +20 srece\n");
+    printf("B - Bolnica(200 EUR), +30 srece svim stanovnicima\n");
+    printf("F - Fabrika(150 EUR), +100 prihoda, -35 srece u komsiluku\n");
+    printf("K - Kancelarije(120 EUR), +80 prihoda\n");
+    printf("Z - Zabavni park(180 EUR), +40 srece, +20 populacije\n");
+
+    printf("=====================================\n");
+
+    printf("TOK IGRE:\n");
+    printf("1 - Postavi zgradu\n");
+    printf("2 - Ukloni zgradu\n");
+    printf("3 - Prikazi statistike\n");
+    printf("0 - Sledeci potez\n");
+
+    printf("=====================================\n");
+
+    printf("Koordinate se unose u formatu:\n");
+    printf("- SLOVO BROJ -\n");
+    printf("A 2\n");
+    printf("C 6\n");
+
+    printf("=====================================\n");
+
+    printf("Za gradnju se koriste PRAZNA POLJA.\n");
+    printf("Za gradnju morate imati DOVOLJNO NOVCA.\n");
+
+}
+
+
 // ================= GLAVNA FUNKCIJA GRADA =================
 
 int main(void) {
@@ -250,7 +293,7 @@ int main(void) {
                 break;
 
             case 2:
-                printf("\nUputstvo u razvoju (Faza 1 stub)...\n");
+                prikazi_uputstvo();
                 break;
             case 0:
                 printf("Gasenje igre...\n");
