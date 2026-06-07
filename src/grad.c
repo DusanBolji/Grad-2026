@@ -181,7 +181,52 @@ int main(void) {
                         }
 
                         case 2:
-                            printf("\nUklanjanje zgrade u razvoju...\n");
+                            {
+                                char red;
+                                int kolona;
+
+                                printf("\n---UKLANJANJE ZGRADE---\n");
+                                printf("Unesi koordinatu (npr. A 2):");
+
+                                if(scanf(" %c %d", &red, &kolona)!=2)
+                                {
+                                    ocistiStdin();
+                                    printf("Greska:los unos!\n");
+                                    break;
+                                }
+                                red=(char)toupper((unsigned char)red);
+
+                                if(red<'A' || red > 'J' || kolona < 1 || kolona > 10)
+                                {
+                                    printf("Greska:van granica mapre!\n");
+                                    break;
+                                }
+
+                                int r = red - 'A';
+                                int k = kolona -1;
+
+                                if(mapaTip[r][k] == ' ')
+                                {
+                                    printf("Nema zgrade na tom polju!\n");
+                                    break;
+                                }
+                                int cena = 0;
+
+                                if(mapaTip[r][k] == 'S')cena = 100;
+                                else if(mapaTip[r][k] == 'P')cena = 50;
+                                else if(mapaTip[r][k] == 'B')cena = 200;
+                                else if(mapaTip[r][k] == 'F')cena = 150;
+                                else if(mapaTip[r][k] == 'K')cena = 120;
+                                else if(mapaTip[r][k] == 'Z')cena = 180;
+
+                                budzet += (cena*mapaNivo[r][k]) / 2;
+
+                                mapaTip[r][k] = ' ';
+                                mapaNivo[r][k] = 0;
+
+                                printf("Zgrada uklonjena!\n");
+                                break;
+                            }
                             break;
 
                         case 3:
