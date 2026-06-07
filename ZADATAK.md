@@ -13,5 +13,5 @@ Nakon svake akcije automatski se ažuriraju statistike grada i obračunavaju pri
 
 Posebna pažnja posvećena je medjusobnom uticaju zgrada. Efekti pojedinih objekata zavise od njihovog položaja na mapi i zagrada u kojoj se nalaze u njihovom komšiluku. Na primer, parkovi povećavaju sreću obližnjih stanovnika, dok fabrike mogu negativno uticati na okolna naselja. Na taj način igrač mora pažljivo planirati raspored objekata  kako bi obezbedio održiv razvoj grada.
 
-Igra nema unapred definisan kraj niti uslov za pobedu. Glavni cilj je izgradnja što uspešnijeg i perspektivnijeg grada uz održavanje ppozitivnog budžeta, visokog nivoa sreće stanovnika i stalnog rasta populacije.
+Igra nema unapred definisan kraj niti uslov za pobedu. Glavni cilj je izgradnja što uspešnijeg i perspektivnijeg grada uz održavanje pozitivnog budžeta, visokog nivoa sreće stanovnika i stalnog rasta populacije.
 
