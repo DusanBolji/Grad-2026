@@ -17,3 +17,4 @@ SUZANA - dodaje proceduru za uputstvo.
 
 8.6.2026.
 SUZANA - ubacuje funkciju za nadogradnju zgrada, dodaje bonus za 2 nove zgrade.
+MIHAILO - dodaje funkcionalnost statistike(populacija, sreca, prihodi i troskovi).
