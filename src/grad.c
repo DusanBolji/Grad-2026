@@ -15,6 +15,8 @@ int sreca;
 int potezBroj;
 int prihod = 0;
 int troskovi = 0;
+int negativanBudzetRundi = 0;
+int igraAktivna = 1;
 void azurirajStatistiku(char tip, int nivo, int faktor);
 void azuriranjeKomsiluka();
 
@@ -302,6 +304,36 @@ void zavrsiPotez()
     potezBroj++;
 }
 
+//PROVERA KRAJA IGRE
+void proveriKrajIgre()
+{
+    if (budzet < 0)
+        negativanBudzetRundi ++;
+
+    else
+        negativanBudzetRundi = 0;
+
+    if (negativanBudzetRundi >= 3)
+    {
+        printf("=====================================\n");
+        printf("KRAJ IGRE: BANKROT!\n");
+        printf("Vas budzet je bio u minusu 3 poteza zaredom.\n");
+        printf("=====================================\n");
+        igraAktivna =  0;
+    }
+
+    else if (sreca < 20)
+    {
+        printf("=====================================\n");
+        printf("KRAJ IGRE: POBUNA GRADJANA!\n");
+        printf("Sreca stanovnistva je pala ispod 20%.\n");
+        printf("=====================================\n");
+        igraAktivna =  0;
+    }
+
+
+}
+
 //AYURIRANJE SRECE KOMSILUKA//
 
 int main(void) {
@@ -335,7 +367,7 @@ int main(void) {
                 inicijalizujMapu();
 
                 int krajPoteza = 0;
-                while (!krajPoteza) {
+                while (igraAktivna) {
                     printf("\n==================================================\n");
                     printf(" POTEZ %d | Budzet: %d EUR\n", potezBroj, budzet);
                     printf("==================================================\n");
@@ -421,6 +453,7 @@ int main(void) {
                                     uspesnaGradnja = 1;
 
                                     zavrsiPotez();
+                                    proveriKrajIgre();
                                 }
 
                             }
@@ -482,6 +515,7 @@ int main(void) {
                                 printf("Zgrada uklonjena!\n");
 
                                 zavrsiPotez();
+                                proveriKrajIgre();
 
                                 break;
                             }
@@ -491,6 +525,7 @@ int main(void) {
                             nadogradiZgradu();
 
                             zavrsiPotez();
+                            proveriKrajIgre();
                             break;
 
                         case 4:
@@ -505,6 +540,7 @@ int main(void) {
                             printf("Prelaz na sledeci potez...\n");
 
                             zavrsiPotez();
+                            proveriKrajIgre();
                             break;
 
                         default:
