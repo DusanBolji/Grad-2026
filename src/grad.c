@@ -16,6 +16,7 @@ int potezBroj;
 int prihod = 0;
 int troskovi = 0;
 void azurirajStatistiku(char tip, int nivo, int faktor);
+void azuriranjeKomsiluka();
 
 // ================= INICIJALIZACIJA =================
 
@@ -233,6 +234,59 @@ void azurirajStatistiku(char tip, int nivo, int faktor)
 
 //AZURIRANJE STATISTIKE KROZ IGRU//
 
+void azuriranjeKomsiluka()
+{
+    int i, j, x, y;
+
+    for(i=0; i < VISINA; i++)
+    {
+        for(j=0; j < SIRINA;j++)
+        {
+            char tip = mapaTip[i][j];
+
+            if(tip == 'P')
+            {
+                for(x = i-1; x <= i+1; x++)
+                {
+                    for(y = j-1; y <= j+1; j++)
+                    {
+                        if(x >= 0 && x < VISINA && y >= 0 && y < SIRINA)
+                        {
+                            if(mapaTip[x][y] != ' ')
+                            {
+                                sreca += 2;
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            if(tip == 'F')
+            {
+                for(x = i-2; x<=i+2; x++)
+                {
+                    for(y = j-2; y <= j+2; y++)
+                    {
+                        if (x >=0 && x <VISINA && y >= 0 && y < SIRINA)
+                        {
+                            if(mapaTip[x][y] != ' ')
+                            {
+                                sreca -= 3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if(sreca > 100)sreca = 100;
+    if(sreca < 0)sreca = 0;
+}
+
+//AYURIRANJE SRECE KOMSILUKA//
+
 int main(void) {
     int izbor, opcija;
 
@@ -432,6 +486,8 @@ int main(void) {
 
                             prihod = 0;
                             troskovi = 0;
+
+                            azuriranjeKomsiluka();
 
                             potezBroj++;
                             krajPoteza = 1; // Zavrsava trenutni potez i izlazi iz while petlje
