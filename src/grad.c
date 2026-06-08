@@ -396,7 +396,7 @@ int main(void) {
                                     printf("Greska: Nemate dovoljno novca! Potrebno: %d EUR, Trenutno: %d EUR\n", cena, budzet);
                                     break;
                                 } else {
-
+                                    budzet -= cena;
                                     mapaTip[r][k] = tip;
                                     mapaNivo[r][k] = 1;
                                     azurirajStatistiku(tip, 1, 1);
