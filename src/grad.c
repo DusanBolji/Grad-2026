@@ -61,6 +61,75 @@ void iscrtajMapu(void) {
     crtajHorizontalnuLiniju();
 }
 
+void nadogradiZgradu(void)
+{
+    char red;
+    int kolona;
+
+    printf("NADOGRADNJA ZGRADE:");
+    printf("Unesite koordinatu: ");
+
+    if(scanf(" %c %d", &red, &kolona) != 2)
+    {
+        ocistiStdin();
+        printf("Pogresan unos!\n");
+        return;
+    }
+
+    red = (char)toupper((unsigned char)red);
+
+    if(red < 'A' || red > 'J' || kolona < 1 || kolona > 10)
+    {
+        printf("Koordinate van mape!\n");
+        return;
+    }
+
+    int r = red - 'A';
+    int k = kolona - 1;
+
+    if(mapaTip[r][k] == ' ')
+    {
+        printf("Na ovom polju nema zgrade!\n");
+        return;
+    }
+
+    if(mapaTip[r][k] == 'P' || mapaTip[r][k] == 'Z' || mapaTip[r][k] == 'M')
+    {
+        printf("Ova zgrada ne moze da se nadogradjuje!\n");
+        return;
+    }
+
+    if(mapaNivo[r][k] >= 3)
+    {
+        printf("Ova zgrada je vec na maksimalnom nivou!");
+        return;
+    }
+
+    int cena = 0;
+    if (mapaTip[r][k] == 'S') cena = 100;
+    else if (mapaTip[r][k] == 'P') cena = 50;
+    else if (mapaTip[r][k] == 'B') cena = 200;
+    else if (mapaTip[r][k] == 'F') cena = 150;
+    else if (mapaTip[r][k] == 'K') cena = 120;
+    else if (mapaTip[r][k] == 'Z') cena = 180;
+    else if (mapaTip[r][k] == 'C') cena = 110;
+    else if (mapaTip[r][k] == 'M') cena = 220;
+    else {printf("Greska: Nepoznat tip zgrade! Pokusajte ponovo.\n");
+    }
+
+    if(budzet < cena)
+    {
+        printf("Nemate dovoljno novca!\n");
+        return;
+    }
+
+    budzet -= cena;
+    mapaNivo[r][k]++;
+
+    printf("Zgrada je uspesno nadogradjena!\n");
+    }
+
+
 // ================= UPUTSTVO  =================
 void prikazi_uputstvo(void)
 {
@@ -69,7 +138,7 @@ void prikazi_uputstvo(void)
     printf("=====================================\n");
 
     printf("Cilj igre je razvoj grada.\n");
-    printf("Gradite zgrade i upravljajte budzetom dok pratite srecu i populaciju!\n");
+    printf("Gradite zgrade, unapredjujte ih i upravljajte budzetom dok pratite srecu i populaciju!\n");
 
     printf("=====================================\n");
 
@@ -80,6 +149,8 @@ void prikazi_uputstvo(void)
     printf("F - Fabrika(150 EUR), +100 prihoda, -35 srece u komsiluku\n");
     printf("K - Kancelarije(120 EUR), +80 prihoda\n");
     printf("Z - Zabavni park(180 EUR), +40 srece, +20 populacije\n");
+    printf("C - Kazino(110 EUR), +10 srece, -50 prihod\n");
+    printf("M - Muzej(220 EUR), +35 srece, +70 prihod\n");
 
     printf("=====================================\n");
 
@@ -98,6 +169,9 @@ void prikazi_uputstvo(void)
 
     printf("=====================================\n");
 
+    printf("Maksimalan nivo zgrade je 3.\n");
+    printf("Cena nadogradnje je ista kao originalna cena zgrade, svi efekti rastu za 50%!\n");
+    printf("Nije moguce nadograditi: park, zabavni centar i muzej.\n");
     printf("Za gradnju se koriste PRAZNA POLJA.\n");
     printf("Za gradnju morate imati DOVOLJNO NOVCA.\n");
 
@@ -148,7 +222,8 @@ int main(void) {
                     printf("Odaberite opciju:\n");
                     printf("1 Postavi zgradu\n");
                     printf("2 Ukloni zgradu\n");
-                    printf("3 Prikazi statistike\n");
+                    printf("3 Nadogradi zgradu\n");
+                    printf("4 Prikazi statistike\n");
                     printf("0 Sledeci potez\n");
                     printf("Izbor akcije: ");
 
@@ -166,7 +241,7 @@ int main(void) {
                                 int kolona, cena = 0;
 
                                 printf("\n--- GRADNJA ZGRADE (Unesite 'X' za povratak) ---\n");
-                                printf("Unesite tip zgrade (S, P, B, F, K, Z): ");
+                                printf("Unesite tip zgrade (S, P, B, F, K, Z, C, M): ");
                                 scanf(" %c", &tip);
                                 tip = (char)toupper((unsigned char)tip);
 
@@ -180,6 +255,8 @@ int main(void) {
                                 else if (tip == 'F') cena = 150;
                                 else if (tip == 'K') cena = 120;
                                 else if (tip == 'Z') cena = 180;
+                                else if (tip == 'C') cena = 110;
+                                else if (tip == 'M') cena = 220;
                                 else {
                                     printf("Greska: Nepoznat tip zgrade! Pokusajte ponovo.\n");
                                     continue;
@@ -241,7 +318,7 @@ int main(void) {
 
                                 if(red<'A' || red > 'J' || kolona < 1 || kolona > 10)
                                 {
-                                    printf("Greska:van granica mapre!\n");
+                                    printf("Greska: van granica mape!\n");
                                     break;
                                 }
 
@@ -261,6 +338,9 @@ int main(void) {
                                 else if(mapaTip[r][k] == 'F')cena = 150;
                                 else if(mapaTip[r][k] == 'K')cena = 120;
                                 else if(mapaTip[r][k] == 'Z')cena = 180;
+                                else if(mapaTip[r][k] == 'C')cena = 110;
+                                else if(mapaTip[r][k] == 'M')cena = 220;
+
 
                                 budzet += (cena*mapaNivo[r][k]) / 2;
 
@@ -273,6 +353,10 @@ int main(void) {
                             break;
 
                         case 3:
+                            nadogradiZgradu();
+                            break;
+
+                        case 4:
                             printf("\n--- STATISTIKA GRADA ---\n");
                             printf("Potez broj: %d\n", potezBroj);
                             printf("Budzet: %d EUR\n", budzet);
