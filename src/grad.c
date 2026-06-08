@@ -13,6 +13,9 @@ int budzet;
 int populacija;
 int sreca;
 int potezBroj;
+int prihod = 0;
+int troskovi = 0;
+void azurirajStatistiku(char tip, int nivo, int faktor);
 
 // ================= INICIJALIZACIJA =================
 
@@ -125,6 +128,7 @@ void nadogradiZgradu(void)
 
     budzet -= cena;
     mapaNivo[r][k]++;
+    azurirajStatistiku(mapaTip[r][k], mapaNivo[r][k], 1);
 
     printf("Zgrada je uspesno nadogradjena!\n");
     }
@@ -179,6 +183,55 @@ void prikazi_uputstvo(void)
 
 
 // ================= GLAVNA FUNKCIJA GRADA =================
+void azurirajStatistiku(char tip, int nivo, int faktor)
+{
+    float mult = 1.0 + (nivo - 1) * 0.5;
+
+    switch(tip)
+    {
+    case 'S':
+        populacija +=(int)(50 * mult) * faktor;
+        sreca +=(int)(10 * mult) * faktor;
+        troskovi += 10 * faktor;
+        break;
+    case 'P':
+        sreca +=(int)(20 * mult) * faktor;
+        troskovi += 5 * faktor;
+        break;
+    case 'B':
+        sreca +=(int)(30 * mult) * faktor;
+        troskovi += 20 * faktor;
+        break;
+    case 'F':
+        prihod +=(int)(100 * mult) * faktor;
+        sreca -=(int)(35 * mult) * faktor;
+        troskovi += 15 * faktor;
+        break;
+    case 'K':
+        prihod +=(int)(80 * mult) * faktor;
+        troskovi += 12 * faktor;
+        break;
+    case 'Z':
+        populacija +=(int)(20 * mult) * faktor;
+        sreca +=(int)(40 * mult) * faktor;
+        troskovi += 8 * faktor;
+        break;
+    case 'C':
+        sreca +=(int)(10 * mult) * faktor;
+        prihod -=(int)(50 * mult) * faktor;
+        troskovi += 8 * faktor;
+        break;
+    case 'M':
+        prihod +=(int)(70 * mult) * faktor;
+        sreca +=(int)(35 * mult) * faktor;
+        troskovi += 22 * faktor;
+        break;
+    }
+    if(sreca > 100)sreca = 100;
+    if(sreca < 0)sreca = 0;
+}
+
+//AZURIRANJE STATISTIKE KROZ IGRU//
 
 int main(void) {
     int izbor, opcija;
@@ -292,7 +345,7 @@ int main(void) {
 
                                     mapaTip[r][k] = tip;
                                     mapaNivo[r][k] = 1;
-                                    budzet -= cena;
+                                    azurirajStatistiku(tip, 1, 1);
                                     printf("Uspesno postavljena zgrada %c na %c%d! Preostali budzet: %d EUR\n", tip, red, kolona, budzet);
                                     uspesnaGradnja = 1;
                                 }
@@ -344,6 +397,11 @@ int main(void) {
 
                                 budzet += (cena*mapaNivo[r][k]) / 2;
 
+                                char tip = mapaTip[r][k];
+                                int nivo = mapaNivo[r][k];
+
+                                azurirajStatistiku(tip, nivo, -1);
+
                                 mapaTip[r][k] = ' ';
                                 mapaNivo[r][k] = 0;
 
@@ -366,6 +424,15 @@ int main(void) {
 
                         case 0:
                             printf("Prelaz na sledeci potez...\n");
+
+                            budzet += prihod;
+                            budzet -= troskovi;
+
+                            //RESET ZA SLEDECI POTEZ//
+
+                            prihod = 0;
+                            troskovi = 0;
+
                             potezBroj++;
                             krajPoteza = 1; // Zavrsava trenutni potez i izlazi iz while petlje
                             break;
