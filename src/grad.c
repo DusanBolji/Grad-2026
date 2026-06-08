@@ -248,7 +248,7 @@ void azuriranjeKomsiluka()
             {
                 for(x = i-1; x <= i+1; x++)
                 {
-                    for(y = j-1; y <= j+1; j++)
+                    for(y = j-1; y <= j+1; y++)
                     {
                         if(x >= 0 && x < VISINA && y >= 0 && y < SIRINA)
                         {
@@ -283,6 +283,23 @@ void azuriranjeKomsiluka()
 
     if(sreca > 100)sreca = 100;
     if(sreca < 0)sreca = 0;
+}
+
+//KRAJ POTEZA
+
+void zavrsiPotez()
+{
+    budzet += prihod;
+    budzet -= troskovi;
+
+    //RESET ZA SLEDECI POTEZ//
+
+    prihod = 0;
+    troskovi = 0;
+
+    azuriranjeKomsiluka();
+
+    potezBroj++;
 }
 
 //AYURIRANJE SRECE KOMSILUKA//
@@ -402,7 +419,10 @@ int main(void) {
                                     azurirajStatistiku(tip, 1, 1);
                                     printf("Uspesno postavljena zgrada %c na %c%d! Preostali budzet: %d EUR\n", tip, red, kolona, budzet);
                                     uspesnaGradnja = 1;
+
+                                    zavrsiPotez();
                                 }
+
                             }
                             break;
                         }
@@ -460,12 +480,17 @@ int main(void) {
                                 mapaNivo[r][k] = 0;
 
                                 printf("Zgrada uklonjena!\n");
+
+                                zavrsiPotez();
+
                                 break;
                             }
                             break;
 
                         case 3:
                             nadogradiZgradu();
+
+                            zavrsiPotez();
                             break;
 
                         case 4:
@@ -479,18 +504,7 @@ int main(void) {
                         case 0:
                             printf("Prelaz na sledeci potez...\n");
 
-                            budzet += prihod;
-                            budzet -= troskovi;
-
-                            //RESET ZA SLEDECI POTEZ//
-
-                            prihod = 0;
-                            troskovi = 0;
-
-                            azuriranjeKomsiluka();
-
-                            potezBroj++;
-                            krajPoteza = 1; // Zavrsava trenutni potez i izlazi iz while petlje
+                            zavrsiPotez();
                             break;
 
                         default:
