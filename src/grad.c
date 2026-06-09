@@ -17,6 +17,8 @@ int prihod = 0;
 int troskovi = 0;
 int negativanBudzetRundi = 0;
 int igraAktivna = 1;
+int odrzavanje = 0;
+int zabranjenaGradnja = 0;
 void azurirajStatistiku(char tip, int nivo, int faktor);
 void azuriranjeKomsiluka();
 
@@ -286,21 +288,84 @@ void azuriranjeKomsiluka()
     if(sreca > 100)sreca = 100;
     if(sreca < 0)sreca = 0;
 }
+//AZURIRANJE SRECE KOMSILUKA//
+
+
+//DODATI PRIHODI I TROSKOVI PRI SVAKOM POTEZU//
+void izracunajOdrzavanje()
+{
+    odrzavanje = 0;
+
+    for(int i = 0; i < VISINA; i++)
+    {
+        for(int j = 0; j < SIRINA; j++)
+        {
+            char tip = mapaTip[i][j];
+            int nivo = mapaNivo[i][j];
+
+            int cena = 0;
+
+            if(tip == 'S')cena = 100;
+            if(tip == 'P')cena = 50;
+            if(tip == 'B')cena = 200;
+            if(tip == 'F')cena = 150;
+            if(tip == 'K')cena = 120;
+            if(tip == 'Z')cena = 180;
+            if(tip == 'C')cena = 110;
+            if(tip == 'M')cena = 220;
+
+            odrzavanje += (cena * nivo) / 10;
+        }
+    }
+}
+
+void izracunajPrihod()
+{
+    prihod = 0;
+
+    for(int i = 0; i < VISINA; i++)
+    {
+        for(int j = 0; j < SIRINA; j++)
+        {
+
+            char tip = mapaTip[i][j];
+            int nivo = mapaNivo[i][j];
+
+            float mult = 1.0 +(nivo -1)* 0.5;
+
+            if(tip == 'F')
+                prihod +=(int)(100 * mult);
+            if(tip =='K')
+                prihod +=(int)(80 * mult);
+        }
+    }
+}
 
 //KRAJ POTEZA
 
 void zavrsiPotez()
 {
-    budzet += prihod;
-    budzet -= troskovi;
-
-    //RESET ZA SLEDECI POTEZ//
-
-    prihod = 0;
     troskovi = 0;
 
     azuriranjeKomsiluka();
 
+    izracunajPrihod();
+
+    izracunajOdrzavanje();
+
+    budzet += prihod;
+    budzet -= troskovi;
+    budzet -= odrzavanje;
+
+    if(budzet < 0)
+    {
+        budzet = 0;
+        zabranjenaGradnja = 1;
+    }
+    else
+    {
+        zabranjenaGradnja = 0;
+    }
     potezBroj++;
 }
 
@@ -334,7 +399,6 @@ void proveriKrajIgre()
 
 }
 
-//AYURIRANJE SRECE KOMSILUKA//
 
 int main(void) {
     int izbor, opcija;
@@ -441,9 +505,9 @@ int main(void) {
                                     continue;
                                 }
 
-                                if (budzet < cena) {
-                                    printf("Greska: Nemate dovoljno novca! Potrebno: %d EUR, Trenutno: %d EUR\n", cena, budzet);
-                                    break;
+                                if (budzet < cena || zabranjenaGradnja) {
+                                    printf("Greska:Grad je u finansijskoj krizi.Nemate dovoljno novca! Potrebno: %d EUR, Trenutno: %d EUR\n", cena, budzet);
+                                    continue;
                                 } else {
                                     budzet -= cena;
                                     mapaTip[r][k] = tip;
