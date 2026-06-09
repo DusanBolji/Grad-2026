@@ -21,4 +21,6 @@ MIHAILO - dodaje funkcionalnost statistike(populacija, sreca, prihodi i troskovi
 MIHAILO - dodaje uticaj gradjevina na komsiluk i ispravljanje greske.
 KARINA - dodaje prelazak na sledeci korak nakon svakog dejstva, ispravlja gresku u petlji za azuriranje komsiluka, kao i uslove za bankrot i pobunu koji vode do kraja igre.
 
+9.6.2026.
+MIHAILO - unapredjuje statistiku grada.
 
