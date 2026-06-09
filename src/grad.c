@@ -31,6 +31,18 @@ void inicijalizujMapu(void) {
             mapaNivo[i][j] = 0;   // Nivo je 0 za prazna polja
         }
     }
+
+    mapaTip[0][5] = '~'; //A6
+    mapaTip[1][5] = '~'; //B6
+    mapaTip[1][6] = '~'; //B7
+    mapaTip[2][6] = '~'; //C7
+    mapaTip[3][6] = '~'; //D7
+    mapaTip[3][7] = '~'; //D8
+    mapaTip[4][7] = '~'; //E8
+    mapaTip[5][7] = '~'; //F8
+    mapaTip[5][8] = '~';//F9
+    mapaTip[5][9] = '~'; //F10
+    mapaTip[6][9] = '~'; //G10
 }
 
 // Pomocna funkcija za ciscenje unosa (mora da bude tu zbog scanf-a u meniju)
@@ -61,6 +73,8 @@ void iscrtajMapu(void) {
         for(int j = 0; j < SIRINA; j++) {
             if(mapaTip[i][j] == ' ')
                 printf("    |");
+            else if (mapaTip[i][j] == '~')
+                printf("  ~ |");
             else
                 printf(" %c%d |", mapaTip[i][j], mapaNivo[i][j]);
         }
@@ -99,6 +113,12 @@ void nadogradiZgradu(void)
     if(mapaTip[r][k] == ' ')
     {
         printf("Na ovom polju nema zgrade!\n");
+        return;
+    }
+
+    if (mapaTip[r][k] == '~')
+    {
+        printf("Greska: ne mozete nadograditi reku!");
         return;
     }
 
@@ -494,7 +514,7 @@ void ucitajIgru(const char *imeFajla)
                     printf("3 Nadogradi zgradu\n");
                     printf("4 Prikazi statistike\n");
                     printf("5 Sacuvaj igru\n");
-                    printf("0 Sledeci potez\n");
+                    printf("0 Preskoci potez\n");
                     printf("Izbor akcije: ");
 
                     if (scanf("%d", &opcija) != 1) {
@@ -548,6 +568,12 @@ void ucitajIgru(const char *imeFajla)
 
                                 int r = red - 'A';
                                 int k = kolona - 1;
+
+                                if (mapaTip[r][k] == '~')
+                                    {
+                                        printf("Greska: Na ovom polju tece reka! Gradnja je nemoguca.\n");
+                                    continue;
+                                    }
 
                                 if (mapaTip[r][k] != ' ') {
                                     printf("Greska: Polje %c%d je vec zauzeto (%c%d)! Pokusajte ponovo.\n",
@@ -604,6 +630,13 @@ void ucitajIgru(const char *imeFajla)
                                     printf("Nema zgrade na tom polju!\n");
                                     break;
                                 }
+
+                                if (mapaTip[r][k] == '~')
+                                {
+                                    printf("Greska: ne mozete rusiti prirodne objekte!\n");
+                                    break;
+                                }
+
                                 int cena = 0;
 
                                 if(mapaTip[r][k] == 'S')cena = 100;
