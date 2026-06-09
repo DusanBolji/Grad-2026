@@ -69,12 +69,13 @@ void iscrtajMapu(void) {
     crtajHorizontalnuLiniju();
 }
 
+
+ // ================= NADOGRADNJA=================
 void nadogradiZgradu(void)
 {
     char red;
     int kolona;
 
-    printf("NADOGRADNJA ZGRADE:");
     printf("Unesite koordinatu: ");
 
     if(scanf(" %c %d", &red, &kolona) != 2)
@@ -115,13 +116,10 @@ void nadogradiZgradu(void)
 
     int cena = 0;
     if (mapaTip[r][k] == 'S') cena = 100;
-    else if (mapaTip[r][k] == 'P') cena = 50;
     else if (mapaTip[r][k] == 'B') cena = 200;
     else if (mapaTip[r][k] == 'F') cena = 150;
     else if (mapaTip[r][k] == 'K') cena = 120;
-    else if (mapaTip[r][k] == 'Z') cena = 180;
     else if (mapaTip[r][k] == 'C') cena = 110;
-    else if (mapaTip[r][k] == 'M') cena = 220;
     else {printf("Greska: Nepoznat tip zgrade! Pokusajte ponovo.\n");
     }
 
@@ -187,7 +185,6 @@ void prikazi_uputstvo(void)
 }
 
 
-// ================= GLAVNA FUNKCIJA GRADA =================
 void azurirajStatistiku(char tip, int nivo, int faktor)
 {
     float mult = 1.0 + (nivo - 1) * 0.5;
@@ -399,38 +396,90 @@ void proveriKrajIgre()
 
 }
 
+ // ================= UCITAVANJE I SACUVANJE IGRE =================
+void sacuvajIgru(const char *imeFajla)
+{
+    FILE *f = fopen(imeFajla, "w");
 
-int main(void) {
-    int izbor, opcija;
+    if(f == NULL)
+    {
+        printf("Greska pri cuvanju igre!\n");
+        return;
+    }
 
-    printf("=====================================\n");
-    printf("            CITY BUILDER\n");
-    printf("=====================================\n");
+    fprintf(f, "%d %d %d %d\n", budzet, populacija, sreca, potezBroj);
 
-    do {
-        printf("\nGLAVNI MENI:\n");
-        printf("1 Nova igra\n");
-        printf("2 Uputstvo\n");
-        printf("0 Exit\n");
-        printf("Vas izbor: ");
+    for(int i = 0; i < VISINA; i++)
+    {
+        for(int j = 0; j < SIRINA; j++)
+        {
+            fprintf(f, "%c %d\n", mapaTip[i][j], mapaNivo[i][j]);
+        }
+    }
 
-        if(scanf("%d", &izbor) != 1) {
-            ocistiStdin();
-            continue;
+    fclose(f);
+
+    printf("Igra je sacuvana!\n");
+
+}
+void ucitajIgru(const char *imeFajla)
+    {
+        FILE *f = fopen(imeFajla, "r");
+
+        if(f == NULL)
+        {
+            printf("Ne postoji sacuvana igra!\n");
+            return;
         }
 
-        switch(izbor) {
-            case 1:
-                // Pokretanje nove igre - postavljanje pocetnih vrednosti
-                budzet = 1250;
-                populacija = 0;
-                sreca = 50;
-                potezBroj = 1;
+        fscanf(f, "%d %d %d %d", &budzet, &populacija, &sreca, &potezBroj);
 
-                // Cistimo mapu pre nego sto igra pocne
-                inicijalizujMapu();
+        fgetc(f);
 
-                int krajPoteza = 0;
+        for(int i = 0; i < VISINA; i++)
+        {
+            for(int j = 0; j < SIRINA; j++)
+            {
+               char linija[20];
+
+               if(fgets(linija, sizeof(linija), f) == NULL)
+               {
+                   printf("Greska pri ucitavanju!\n");
+                   fclose(f);
+                   return;
+               }
+
+               if(linija[0] == ' ')
+               {
+                   mapaTip[i][j] = ' ';
+                   sscanf(linija + 1, "%d", &mapaNivo[i][j]);
+               }
+               else
+               {
+                   sscanf(linija, " %c %d", &mapaTip[i][j], &mapaNivo[i][j]);
+               }
+
+            }
+        }
+
+        fclose(f);
+
+        prihod = 0;
+        troskovi = 0;
+        odrzavanje = 0;
+        negativanBudzetRundi = 0;
+        zabranjenaGradnja = 0;
+
+        izracunajPrihod();
+        izracunajOdrzavanje();
+        printf("Igra je ucitana!\n");
+    }
+
+// ================= POKRETANJE=================
+ void pokreniIgru(void)
+ {
+            int opcija;
+
                 while (igraAktivna) {
                     printf("\n==================================================\n");
                     printf(" POTEZ %d | Budzet: %d EUR\n", potezBroj, budzet);
@@ -444,6 +493,7 @@ int main(void) {
                     printf("2 Ukloni zgradu\n");
                     printf("3 Nadogradi zgradu\n");
                     printf("4 Prikazi statistike\n");
+                    printf("5 Sacuvaj igru\n");
                     printf("0 Sledeci potez\n");
                     printf("Izbor akcije: ");
 
@@ -600,6 +650,10 @@ int main(void) {
                             printf("Sreca: %d%%\n", sreca);
                             break;
 
+                        case 5:
+                            sacuvajIgru("save.txt");
+                            break;
+
                         case 0:
                             printf("Prelaz na sledeci potez...\n");
 
@@ -611,10 +665,63 @@ int main(void) {
                             printf("Odabrana opcija ne postoji!\n");
                     }
                 }
+ }
+
+// ================= GLAVNA FUNKCIJA GRADA =================
+
+int main(void) {
+    int izbor, opcija;
+
+    printf("=====================================\n");
+    printf("            CITY BUILDER\n");
+    printf("=====================================\n");
+
+    do {
+        printf("\nGLAVNI MENI:\n");
+        printf("1 Nova igra\n");
+        printf("2 Uputstvo\n");
+        printf("3 Ucitaj igru\n");
+        printf("0 Exit\n");
+        printf("Vas izbor: ");
+
+        if(scanf("%d", &izbor) != 1) {
+            ocistiStdin();
+            continue;
+        }
+
+        switch(izbor) {
+            case 1:
+                // Pokretanje nove igre - postavljanje pocetnih vrednosti
+                budzet = 1250;
+                populacija = 0;
+                sreca = 50;
+                potezBroj = 1;
+
+                prihod = 0;
+                troskovi = 0;
+                odrzavanje = 0;
+                negativanBudzetRundi = 0;
+                zabranjenaGradnja = 0;
+                igraAktivna = 1;
+
+                // Cistimo mapu pre nego sto igra pocne
+                inicijalizujMapu();
+
+                int krajPoteza = 0;
+
+                pokreniIgru();
+
                 break;
 
             case 2:
                 prikazi_uputstvo();
+                break;
+            case 3:
+                ucitajIgru("save.txt");
+
+                igraAktivna = 1;
+                pokreniIgru();
+
                 break;
             case 0:
                 printf("Gasenje igre...\n");
