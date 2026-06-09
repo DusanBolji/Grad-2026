@@ -19,3 +19,6 @@ SUZANA - dodaje proceduru za uputstvo.
 SUZANA - ubacuje funkciju za nadogradnju zgrada, dodaje bonus za 2 nove zgrade.
 MIHAILO - dodaje funkcionalnost statistike(populacija, sreca, prihodi i troskovi).
 MIHAILO - dodaje uticaj gradjevina na komsiluk i ispravljanje greske.
+KARINA - dodaje prelazak na sledeci korak nakon svakog dejstva, ispravlja gresku u petlji za azuriranje komsiluka, kao i uslove za bankrot i pobunu koji vode do kraja igre.
+
+
