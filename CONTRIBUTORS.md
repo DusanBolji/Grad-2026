@@ -25,3 +25,6 @@ KARINA - dodaje prelazak na sledeci korak nakon svakog dejstva, ispravlja gresku
 MIHAILO - unapredjuje statistiku grada.
 SUZANA - reorganizacija fajlova, dodavanje funkcija za pokretanje, ucitavanje i sacuvanje igre.
 KARINA - dodaje polja na kojima je zabranjena nadogradnja, promena opcije na propustanje poteza.
+
+10.6.2026.
+DUSAN i MIHAILO - dodaje nasumicne doagadjaje, grafikon koji prati statistiku igre i sve promenljive su zamenjene strukturom
