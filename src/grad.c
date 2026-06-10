@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <time.h>
 
 #define VISINA 10
 #define SIRINA 10
@@ -359,9 +360,66 @@ void izracunajPrihod()
 }
 
 //KRAJ POTEZA
+// ================= NASUMICNI DOGADJAJI (BONUS) =================
+void okiniNasumicniDogadjaj(void) {
+    // rand() % 10 daje broj od 0 do 9. Šansa je 30% da se desi događaj (ako padne 0, 1 ili 2)
+    int sansa = rand() % 10;
 
+    if (sansa > 2) {
+        return; // Ne dešava se ništa u ovom potezu
+    }
+
+    // Ako je uslov ispunjen, biramo jedan od 3 nasumična događaja (0, 1 ili 2)
+    int tipDogadjaja = rand() % 3;
+
+    printf("\n--- VANREDNE VESTI U GRADU! ---\n");
+
+    switch(tipDogadjaja) {
+        case 0: {
+            // Događaj 1: Donacija povećava budžet za 200 EUR
+            budzet += 200;
+            printf("[DONACIJA] Anonimni investitor je uplatio 200 EUR u budzet grada!\n");
+            break;
+        }
+        case 1: {
+            // Događaj 2: Epidemija smanjuje sreću stanovništva za 10%
+            sreca -= 10;
+            if (sreca < 0) sreca = 0;
+            printf("[EPIDEMIJA] Grip hara gradom! Sreca stanovnistva je opala za 10%%.\n");
+            break;
+        }
+        case 2: {
+            // Događaj 3: Požar uništava fabriku
+            // Tražimo prvu fabriku na mapi i uklanjamo je
+            int fabrikaUnistena = 0;
+            for (int i = 0; i < VISINA; i++) {
+                for (int j = 0; j < SIRINA; j++) {
+                    if (mapaTip[i][j] == 'F') {
+                        mapaTip[i][j] = ' ';
+                        mapaNivo[i][j] = 0;
+                        // Moramo ručno da smanjimo prihode i statistiku jer zgrade više nema
+                        azurirajStatistiku('F', 1, -1);
+
+                        printf("[POZAR] Izbio je veliki pozar! Fabrika na poziciji %c%d je potpuno unistena.\n", 'A' + i, j + 1);
+                        fabrikaUnistena = 1;
+                        break;
+                    }
+                }
+                if (fabrikaUnistena) break;
+            }
+
+            if (!fabrikaUnistena) {
+                // Ako nema fabrike na mapi, pretvaramo događaj u manji incident
+                printf("[VREME] Jaka kisa je pogodila grad, ali nema materijalne stete.\n");
+            }
+            break;
+        }
+    }
+    printf("--------------------------------\n");
+}
 void zavrsiPotez()
 {
+    okiniNasumicniDogadjaj();
     troskovi = 0;
 
     azuriranjeKomsiluka();
@@ -704,6 +762,7 @@ void ucitajIgru(const char *imeFajla)
 
 int main(void) {
     int izbor, opcija;
+    srand(time(NULL));
 
     printf("=====================================\n");
     printf("            CITY BUILDER\n");
