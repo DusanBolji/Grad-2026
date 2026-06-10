@@ -6,8 +6,6 @@
 #define VISINA 10
 #define SIRINA 10
 
-// ================= STRUKTURE PODATAKA =================
-
 typedef struct {
     char mapaTip[VISINA][SIRINA];
     int mapaNivo[VISINA][SIRINA];
@@ -22,8 +20,6 @@ typedef struct {
     int odrzavanje;
     int zabranjenaGradnja;
 } Grad;
-
-// ================= DEKLARACIJE FUNKCIJA =================
 
 void inicijalizujMapu(Grad *g);
 void ocistiStdin(void);
@@ -42,27 +38,25 @@ void sacuvajIgru(Grad *g, const char *imeFajla);
 void ucitajIgru(Grad *g, const char *imeFajla);
 void pokreniIgru(Grad *g);
 
-// ================= INICIJALIZACIJA =================
-
 void inicijalizujMapu(Grad *g) {
     for (int i = 0; i < VISINA; i++) {
         for (int j = 0; j < SIRINA; j++) {
-            g->mapaTip[i][j] = ' ';  // Prazno polje je razmak
-            g->mapaNivo[i][j] = 0;   // Nivo je 0 za prazna polja
+            g->mapaTip[i][j] = ' ';
+            g->mapaNivo[i][j] = 0;
         }
     }
 
-    g->mapaTip[0][5] = '~'; //A6
-    g->mapaTip[1][5] = '~'; //B6
-    g->mapaTip[1][6] = '~'; //B7
-    g->mapaTip[2][6] = '~'; //C7
-    g->mapaTip[3][6] = '~'; //D7
-    g->mapaTip[3][7] = '~'; //D8
-    g->mapaTip[4][7] = '~'; //E8
-    g->mapaTip[5][7] = '~'; //F8
-    g->mapaTip[5][8] = '~'; //F9
-    g->mapaTip[5][9] = '~'; //F10
-    g->mapaTip[6][9] = '~'; //G10
+    g->mapaTip[0][5] = '~';
+    g->mapaTip[1][5] = '~';
+    g->mapaTip[1][6] = '~';
+    g->mapaTip[2][6] = '~';
+    g->mapaTip[3][6] = '~';
+    g->mapaTip[3][7] = '~';
+    g->mapaTip[4][7] = '~';
+    g->mapaTip[5][7] = '~';
+    g->mapaTip[5][8] = '~';
+    g->mapaTip[5][9] = '~';
+    g->mapaTip[6][9] = '~';
 }
 
 void ocistiStdin(void) {
@@ -70,8 +64,6 @@ void ocistiStdin(void) {
     while((c = getchar()) != '\n' && c != EOF)
         ;
 }
-
-// ================= CRTANJE MAPE =================
 
 void crtajHorizontalnuLiniju(void) {
     printf("   +");
@@ -101,8 +93,6 @@ void iscrtajMapu(Grad *g) {
     }
     crtajHorizontalnuLiniju();
 }
-
-// ================= NADOGRADNJA =================
 
 void nadogradiZgradu(Grad *g) {
     char red;
@@ -169,8 +159,6 @@ void nadogradiZgradu(Grad *g) {
 
     printf("Zgrada je uspesno nadogradjena!\n");
 }
-
-// ================= UPUTSTVO =================
 
 void prikazi_uputstvo(void) {
     printf("=====================================\n");
@@ -252,13 +240,9 @@ void azurirajStatistiku(Grad *g, char tip, int nivo, int faktor) {
     if(g->sreca < 0) g->sreca = 0;
 }
 
-// ================= PROMENA 1: ISPRAVLJENO RAČUNANJE KOMŠILUKA =================
-
 void azuriranjeKomsiluka(Grad *g) {
     int i, j, x, y;
 
-    // Resetujemo srecu na baznu vrednost pre nego sto ponovo uracunamo komsiluk
-    // Time sprecavamo da sreca ide u beskonacnost svakim potezom
     int imaStambenih = 0;
     int baznaSreca = 0;
 
@@ -266,7 +250,7 @@ void azuriranjeKomsiluka(Grad *g) {
         for(j=0; j < SIRINA; j++) {
             if(g->mapaTip[i][j] == 'S') {
                 float mult = 1.0 + (g->mapaNivo[i][j] - 1) * 0.5;
-                baznaSreca += (int)(50 * mult); // Faza 2: Pocetna sreca stanovnika je 50%
+                baznaSreca += (int)(50 * mult);
                 imaStambenih++;
             }
         }
@@ -278,7 +262,6 @@ void azuriranjeKomsiluka(Grad *g) {
         g->sreca = 50;
     }
 
-    // Sada primenjujemo bonuse/penale iz neposredne okoline
     for(i=0; i < VISINA; i++) {
         for(j=0; j < SIRINA; j++) {
             char tip = g->mapaTip[i][j];
@@ -287,7 +270,7 @@ void azuriranjeKomsiluka(Grad *g) {
                 for(x = i-1; x <= i+1; x++) {
                     for(y = j-1; y <= j+1; y++) {
                         if(x >= 0 && x < VISINA && y >= 0 && y < SIRINA) {
-                            if(g->mapaTip[x][y] == 'S') { // Utice samo na stambene zgrade
+                            if(g->mapaTip[x][y] == 'S') {
                                 g->sreca += 2;
                             }
                         }
@@ -299,7 +282,7 @@ void azuriranjeKomsiluka(Grad *g) {
                 for(x = i-2; x<=i+2; x++) {
                     for(y = j-2; y <= j+2; y++) {
                         if (x >=0 && x <VISINA && y >= 0 && y < SIRINA) {
-                            if(g->mapaTip[x][y] == 'S') { // Fabrika kvari srecu stanarima
+                            if(g->mapaTip[x][y] == 'S') {
                                 g->sreca -= 3;
                             }
                         }
@@ -353,11 +336,9 @@ void izracunajPrihod(Grad *g) {
     }
 }
 
-// ================= NASUMICNI DOGADJAJI (BONUS) =================
-
 void okiniNasumicniDogadjaj(Grad *g) {
     int sansa = rand() % 10;
-    if (sansa > 2) return; // 30% sansa za dogadjaj
+    if (sansa > 2) return;
 
     int tipDogadjaja = rand() % 3;
     printf("\n--- VANREDNE VESTI U GRADU! ---\n");
@@ -396,8 +377,6 @@ void okiniNasumicniDogadjaj(Grad *g) {
     printf("--------------------------------\n");
 }
 
-// ================= PROMENA 2: SREĐENO UPRAVLJANJE BUDŽETOM KOD ZAVRŠETKA POTEZA =================
-
 void zavrsiPotez(Grad *g) {
     okiniNasumicniDogadjaj(g);
 
@@ -406,13 +385,13 @@ void zavrsiPotez(Grad *g) {
     izracunajOdrzavanje(g);
 
     g->budzet += g->prihod;
-    g->budzet -= g->troskovi;    // Troskovi se ovde ne resetuju na 0 pre vremena
+    g->budzet -= g->troskovi;
     g->budzet -= g->odrzavanje;
 
-    g->troskovi = 0;             // Resetujemo troskove tek na samom kraju poteza za sledeci potez
+    g->troskovi = 0;
 
     if(g->budzet < 0) {
-        g->zabranjenaGradnja = 1; // Kada je u minusu, zabranjeno je graditi nove stvari
+        g->zabranjenaGradnja = 1;
     } else {
         g->zabranjenaGradnja = 0;
     }
@@ -440,8 +419,6 @@ void proveriKrajIgre(Grad *g) {
         g->igraAktivna = 0;
     }
 }
-
-// ================= UCITAVANJE I SACUVANJE IGRE =================
 
 void sacuvajIgru(Grad *g, const char *imeFajla) {
     FILE *f = fopen(imeFajla, "w");
@@ -500,8 +477,6 @@ void ucitajIgru(Grad *g, const char *imeFajla) {
     izracunajOdrzavanje(g);
     printf("Igra je ucitana!\n");
 }
-
-// ================= GLAVNA PETLJA IGRE =================
 
 void pokreniIgru(Grad *g) {
     int opcija;
@@ -687,12 +662,10 @@ void pokreniIgru(Grad *g) {
     }
 }
 
-// ================= GLAVNA FUNKCIJA =================
-
 int main(void) {
-    srand(time(NULL)); // Inicijalizacija random generatora
+    srand(time(NULL));
     int izbor;
-    Grad mojGrad; // Kreiranje instance strukture
+    Grad mojGrad;
 
     printf("=====================================\n");
     printf("            CITY BUILDER\n");
