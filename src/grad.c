@@ -31,6 +31,10 @@ typedef struct {
     int negativanBudzetRundi;
     int igraAktivna;
     int zabranjenaGradnja;
+    int istorijaBudzet[10];
+    int istorijaPopulacija[10];
+    int istorijaSreca[10];
+    int brojZapisaUIstoriji;
 } Grad;
 
 // Globalna promenljiva za stanje grada
@@ -41,7 +45,8 @@ void azurirajStatistiku(char tip, int nivo, int faktor);
 void azuriranjeKomsiluka(void);
 void izracunajPrihod(void);
 void izracunajOdrzavanje(void);
-
+void dodajUPotezIstoriju(void);
+void prikaziGrafikonIstorije(void);
 // ================= INICIJALIZACIJA =================
 
 void inicijalizujMapu(void) {
@@ -398,6 +403,7 @@ void zavrsiPotez(void) {
         mojGrad.zabranjenaGradnja = 0;
     }
     mojGrad.potezBroj++;
+    dodajUPotezIstoriju();
 }
 
 void proveriKrajIgre(void) {
@@ -657,6 +663,7 @@ void pokreniIgru(void) {
                 printf("Budzet: %d EUR\n", mojGrad.budzet);
                 printf("Populacija: %d\n", mojGrad.populacija);
                 printf("Sreca: %d%%\n", mojGrad.sreca);
+                prikaziGrafikonIstorije();
                 break;
 
             case 5:
@@ -674,7 +681,72 @@ void pokreniIgru(void) {
         }
     }
 }
+void dodajUPotezIstoriju(void) {
+    // Ako još nemamo 10 zapisa, samo upisujemo na sledeće slobodno mesto
+    if (mojGrad.brojZapisaUIstoriji < 10) {
+        int indeks = mojGrad.brojZapisaUIstoriji;
+        mojGrad.istorijaBudzet[indeks]     = mojGrad.budzet;
+        mojGrad.istorijaPopulacija[indeks] = mojGrad.populacija;
+        mojGrad.istorijaSreca[indeks]      = mojGrad.sreca;
+        mojGrad.brojZapisaUIstoriji++;
+    } else {
+        // Ako već imamo 10 zapisa, pomeramo sve za jedno mesto unazad (izbacujemo najstariji)
+        for (int i = 0; i < 9; i++) {
+            mojGrad.istorijaBudzet[i]     = mojGrad.istorijaBudzet[i + 1];
+            mojGrad.istorijaPopulacija[i] = mojGrad.istorijaPopulacija[i + 1];
+            mojGrad.istorijaSreca[i]      = mojGrad.istorijaSreca[i + 1];
+        }
+        // Na poslednje mesto upisujemo najnovije podatke
+        mojGrad.istorijaBudzet[9]     = mojGrad.budzet;
+        mojGrad.istorijaPopulacija[9] = mojGrad.populacija;
+        mojGrad.istorijaSreca[9]      = mojGrad.sreca;
+    }
+}
+void prikaziGrafikonIstorije(void) {
+    printf("\n==================================================\n");
+    printf("        MINI GRAFIKON ISTORIJE (Poslednjih %d poteza)\n", mojGrad.brojZapisaUIstoriji);
+    printf("==================================================\n");
 
+    if (mojGrad.brojZapisaUIstoriji == 0) {
+        printf("Nema dovoljno podataka. Odigrajte bar jedan potez!\n");
+        return;
+    }
+
+    // 1. GRAFIKON ZA BUDŽET (Skaliranje: 1 zvezdica = 100 EUR)
+    printf("\nBUDZET (Svaka * predstavlja 100 EUR):\n");
+    for (int i = 0; i < mojGrad.brojZapisaUIstoriji; i++) {
+        printf("Potez %-2d [%4d EUR]: ", i + 1, mojGrad.istorijaBudzet[i]);
+        int brojZvezdica = mojGrad.istorijaBudzet[i] / 100;
+        if (brojZvezdica < 0) brojZvezdica = 0; // Zaštita od minusa
+        for (int j = 0; j < brojZvezdica; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+
+    // 2. GRAFIKON ZA POPULACIJU (Skaliranje: 1 zvezdica = 20 stanovnika)
+    printf("\nPOPULACIJA (Svaka * predstavlja 20 stanovnika):\n");
+    for (int i = 0; i < mojGrad.brojZapisaUIstoriji; i++) {
+        printf("Potez %-2d [%4d stan.]: ", i + 1, mojGrad.istorijaPopulacija[i]);
+        int brojZvezdica = mojGrad.istorijaPopulacija[i] / 20;
+        for (int j = 0; j < brojZvezdica; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+
+    // 3. GRAFIKON ZA SREĆU (Skaliranje: 1 zvezdica = 5% sreće)
+    printf("\nSRECA (Svaka * predstavlja 5%% srece):\n");
+    for (int i = 0; i < mojGrad.brojZapisaUIstoriji; i++) {
+        printf("Potez %-2d [%3d%%]:       ", i + 1, mojGrad.istorijaSreca[i]);
+        int brojZvezdica = mojGrad.istorijaSreca[i] / 5;
+        for (int j = 0; j < brojZvezdica; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+    printf("==================================================\n");
+}
 // ================= GLAVNA FUNKCIJA =================
 
 int main(void) {
@@ -710,6 +782,7 @@ int main(void) {
                 mojGrad.negativanBudzetRundi = 0;
                 mojGrad.zabranjenaGradnja = 0;
                 mojGrad.igraAktivna = 1;
+                mojGrad.brojZapisaUIstoriji = 0;
 
                 inicijalizujMapu();
                 pokreniIgru();
